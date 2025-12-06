@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirmación de Compra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<body>
+<style>
+    /* ======================================================= */
+ /* ====== 1. CONFIGURACIÓN GLOBAL Y VARIABLES BASE ====== */
+ /* ======================================================= */
+
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+ :root {
+     /* Colores base para la estética Oscura + Neón Kawasaki */
+     --kawasaki-green: #00ff99; /* Verde Neón Principal */
+     --kawasaki-dark: #0a5c2c;  /* Verde Oscuro Formal */
+     --dark-bg: #121212; /* Fondo de la página (Negro oscuro) */
+     --surface-dark: #1e1e1e; /* Fondos de contenedores (Carrito, Resumen) */
+     --surface-medium: #2a2a2a;
+     --text-light: #f0f0f0; /* Texto principal claro */
+     --text-secondary: #aaaaaa;
+     --border-neon: rgba(0, 255, 153, 0.4);
+     --shadow-neon: 0 0 15px rgba(0, 255, 153, 0.4);
+ }
+
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     font-family: 'Poppins', sans-serif;
+     background-color: var(--dark-bg);
+     color: var(--text-light); /* Texto principal de la página (claro) */
+     overflow-x: hidden;
+     line-height: 1.5;
+ }
+
+ a {
+     text-decoration: none;
+     color: inherit;
+ }
+
+ /* (Otras secciones de CSS como HEADER, MAIN, PRODUCTOS, CARRITO se mantienen igual) */
+
+
+ /* ======================================================= */
+ /* ====== 6. ESTILOS DE TICKET/CONFIRMACIÓN (VistaTicket.html) - MODIFICADO ====== */
+ /* ======================================================= */
+
+ .card-shadow-neon {
+     /* Fondo Blanco para hacer el texto Negro legible */
+     background-color: var(--text-light);
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+     border: 1px solid var(--border-neon);
+     color: #000; /* 🚨 Establecemos el color de texto a NEGRO en toda la tarjeta 🚨 */
+ }
+
+ /* Encabezado (Se mantiene el estilo Kawasaki) */
+ .card-header {
+     background-color: var(--kawasaki-dark) !important;
+     color: var(--text-light) !important; /* Texto del encabezado en blanco */
+     border-bottom: 2px solid var(--kawasaki-green);
+     font-weight: 600;
+ }
+
+ /* Lista de ítems del ticket */
+ .list-group-flush .list-group-item {
+     background-color: transparent;
+     border-color: #ccc; /* Bordes más suaves sobre fondo blanco */
+     color: #000; /* 🚨 Texto normal en NEGRO */
+     font-weight: 400;
+ }
+
+ /* Etiquetas (Número de Pedido, Fecha) */
+ .list-group-item strong {
+     color: var(--kawasaki-dark); /* Color oscuro para las etiquetas */
+     font-weight: 600;
+ }
+
+ /* Fila de Total Pagado */
+ .list-group-item-success {
+     /* Fondo verde claro para el total */
+     background-color: rgba(0, 255, 153, 0.1) !important;
+     border-left: 5px solid var(--kawasaki-green) !important;
+     font-weight: bold;
+     color: #000 !important; /* 🚨 Texto del total en NEGRO */
+ }
+
+ /* Botones de Ticket */
+ .btn-primary {
+     background-color: var(--kawasaki-dark);
+     border-color: var(--kawasaki-dark);
+     color: white;
+ }
+
+ .btn-secondary-custom {
+     background-color: #333;
+     color: white;
+     border: 1px solid #333;
+     transition: background-color 0.2s;
+ }
+
+ .btn-secondary-custom:hover {
+     background-color: #555;
+     border-color: #555;
+ }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h1 class="card-title">¡Compra Exitosa! 🎉</h1>
+        </div>
+        <div class="card-body">
+            <h4 class="card-subtitle mb-3">Gracias por tu compra en Kawasaki Service Center.</h4>
+
+            <p>Tu orden ha sido procesada correctamente. A continuación, los detalles del ticket:</p>
+
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item">
+                    <strong>Número de Pedido:</strong> <span th:text="${compraFinalizada.id}">12345</span>
+                </li>
+                <li class="list-group-item">
+                    <strong>Fecha de Compra:</strong> <span th:text="${#dates.format(compraFinalizada.fechaCompra, 'dd/MM/yyyy HH:mm')}">15/11/2025 17:00</span>
+                </li>
+                <li class="list-group-item list-group-item-success">
+                    <strong>Total Pagado:</strong> <span th:text="${#numbers.formatCurrency(compraFinalizada.total)}">$12,500.00 MXN</span>
+                </li>
+            </ul>
+
+            <p>Recibirás un correo de confirmación con los detalles de tu envío pronto.</p>
+
+            <div class="d-flex justify-content-start gap-3 mt-3">
+
+                <a th:href="@{/}" class="btn btn-primary">Volver al Catálogo</a>
+
+                <a th:href="@{/compras/historial}" class="btn btn-secondary-custom">
+                    Ver Historial de Compras
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
