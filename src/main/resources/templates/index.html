@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Kawasaki - Catálogo de Productos</title>
+
+    <th:block th:replace="layout :: headLinks"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* ====== CONFIGURACIÓN GLOBAL ====== */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0b0c10; color: #f1f1f1; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ====== ENCABEZADO ====== */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: linear-gradient(90deg, #000000, #0a5c2c); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .logo img { height: 60px; transition: transform 0.3s ease; }
+        .logo img:hover { transform: scale(1.1); }
+        nav a { color: #f1f1f1; margin: 0 15px; font-weight: 500; transition: color 0.3s ease, transform 0.3s ease; }
+        nav a:hover { color: #00ff99; transform: scale(1.1); }
+
+        /* ====== BANNER ====== */
+        .banner { background: linear-gradient(to right, #0a5c2cbb, #000000dd), url('https://media.gq.com.mx/photos/6539498c7e087668808bfc1c/16:9/w_2272,h_1278,c_limit/24MY_Ninja%207%20Hybrid_SL1_ACT%20(1).jpg') center/cover no-repeat; height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; animation: fadeIn 1.5s ease-in; }
+        .banner h1 { font-size: 3rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; text-shadow: 0 3px 10px rgba(0,0,0,0.8); }
+        .banner p { font-size: 1.4rem; font-weight: 300; }
+
+        /* ====== PRODUCTOS ====== */
+        main { padding: 50px 10%; background: #101820; }
+        main h2 { text-align: center; font-size: 2.2rem; color: #00ff99; margin-bottom: 40px; }
+        .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+
+        .item { background: #1a1f24; border-radius: 15px; padding: 20px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .item:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(0,255,153,0.3); }
+        .item img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 10px; }
+        .item h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .item p { color: #00ff99; font-weight: 600; margin-bottom: 15px; font-size: 1.1rem; }
+
+        /* --- INICIO: NUEVOS ESTILOS PARA LOS BOTONES --- */
+
+        /* Contenedor de acciones para mostrar los botones uno al lado del otro */
+        .product-actions {
+            display: flex;
+            justify-content: space-between; /* Distribuye los botones */
+            gap: 10px; /* Espacio entre los botones */
+            margin-top: 15px; /* Separación del precio */
+        }
+
+        .product-actions .action-link {
+            flex-grow: 1; /* Permite que el enlace crezca para llenar el espacio */
+        }
+
+        /* Estilos base para ambos botones dentro de product-actions */
+        .product-actions button {
+            width: 100%; /* Asegura que el botón ocupe todo el espacio del enlace */
+            padding: 10px 5px; /* Ajuste de padding para botones más pequeños */
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        /* Estilo para el botón de Compra */
+        .product-actions .buy-button {
+            background: #00ff99;
+            color: #000;
+        }
+
+        .product-actions .buy-button:hover {
+            background: #0a5c2c;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Estilo para el NUEVO botón de Favoritos */
+        .product-actions .favorite-button {
+            background: #283038; /* Un color oscuro que contrasta con el de compra */
+            color: #ff3366; /* Un rojo para el corazón/texto */
+            border: 2px solid #ff3366;
+        }
+
+        .product-actions .favorite-button:hover {
+            background: #ff3366;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        /* --- FIN: NUEVOS ESTILOS PARA LOS BOTONES --- */
+
+        /* Puedes eliminar las reglas .item button originales ya que fueron reemplazadas por .product-actions button,
+           pero las mantendré comentadas para referencia:
+        .item button { background: #00ff99; color: #000; border: none; padding: 10px 20px; font-weight: 600; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; }
+        .item button:hover { background: #0a5c2c; color: #fff; transform: scale(1.05); }
+        */
+
+        /* ====== PIE DE PÁGINA ====== */
+        footer { text-align: center; padding: 25px; background: #0a5c2c; color: #fff; margin-top: 40px; font-weight: 500; letter-spacing: 1px; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
+
+        /* ====== ANIMACIONES & RESPONSIVE ====== */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 20px; }
+            nav { margin-top: 10px; }
+            .banner h1 { font-size: 2.3rem; }
+            .banner p { font-size: 1rem; }
+            main { padding: 30px 5%; }
+        }
+    </style>
+</head>
+<body data-require-auth="true">
+
+<!-- Reemplazamos el header por el fragmento común -->
+<th:block th:replace="layout :: navbar"></th:block>
+
+<section class="banner">
+    <h1>Bienvenido a tu nueva aventura</h1>
+    <p>Las mejores motos te esperan</p>
+</section>
+
+<main>
+    <h2>Productos destacados</h2>
+    <div class="productos">
+
+        <div class="item" th:each="producto : ${productos}">
+
+            <img th:src="@{/img/{filename}(filename=${producto.imagenUrl})}"
+                 th:alt="${producto.nombre}">
+
+            <h3 th:text="${producto.nombre}">Nombre Dinámico</h3>
+
+            <p th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$ 0.00</p>
+
+            <div class="product-actions">
+                <a th:href="@{/carrito/agregar/{id}(id=${producto.id})}" class="action-link">
+                    <button class="buy-button">Comprar ahora</button>
+                </a>
+
+                <div sec:authorize="isAuthenticated()">
+                    <div th:if="${favoritosIds.contains(producto.id)}">
+                        <a th:href="@{/favoritos/quitar/{id}(id=${producto.id})}" class="action-link">
+                            <button class="favorite-button" style="background:#ff4d4d; border-color:#ff4d4d;">❌ Quitar</button>
+                        </a>
+                    </div>
+                    <div th:unless="${favoritosIds.contains(producto.id)}">
+                        <a th:href="@{/favoritos/agregar/{id}(id=${producto.id})}" class="action-link">
+                            <button class="favorite-button">❤️ Favorito</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(productos)}">
+            <p style="color: #ff9900;">No hay productos destacados para mostrar.</p>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer reemplazado por fragmento común -->
+<th:block th:replace="layout :: footer"></th:block>
+
+<script th:if="${alerta != null && msg != null}">
+    Swal.fire({
+        icon: '[[${alerta}]]',
+        title: '¡Operación Completa!',
+        text: '[[${msg}]]',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+
+</body>
+</html>

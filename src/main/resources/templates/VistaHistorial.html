@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Compras</title>
+
+    <th:block th:replace="layout :: headLinks"></th:block>
+
+    <style>
+        /* ======================================================= */
+        /* ====== VARIABLES DE COLOR KAWASAKI ====== */
+        /* ======================================================= */
+
+        :root {
+            --kawasaki-green: #00ff99; /* Verde Neón Principal */
+            --dark-bg: #121212;        /* Fondo principal muy oscuro */
+            --surface-card: #1e1e1e;   /* Fondo de la caja del historial */
+            --surface-table: #2a2a2a;  /* Fondo de la tabla */
+            --text-light: #f0f0f0;     /* Texto claro */
+            --border-neon: rgba(0, 255, 153, 0.4);
+            --shadow-neon: 0 0 15px rgba(0, 255, 153, 0.3);
+        }
+
+        /* ======================================================= */
+        /* ====== ESTILOS GENERALES ====== */
+        /* ======================================================= */
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Contenedor principal de la tabla */
+        .container {
+            max-width: 1000px;
+            padding: 30px;
+            background-color: var(--surface-card);
+            border-radius: 10px;
+            box-shadow: var(--shadow-neon);
+            border: 1px solid var(--border-neon);
+        }
+
+        /* Título */
+        h2 {
+            color: var(--kawasaki-green);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-shadow: 0 0 5px var(--kawasaki-green);
+        }
+
+        /* Alerta cuando no hay compras */
+        .alert-info {
+            background-color: #00ff991a; /* Verde neón semi-transparente */
+            color: var(--text-light);
+            border-color: var(--kawasaki-green);
+        }
+
+
+        /* Configuración de tabla oscura personalizada */
+        .table-dark {
+            --bs-table-bg: var(--surface-table); /* Fondo más claro que el contenedor */
+            --bs-table-striped-bg: var(--surface-card); /* Filas alternas */
+            --bs-table-hover-bg: #3c3c3c; /* Resaltar al pasar el mouse */
+            --bs-table-border-color: #00ff9966;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Encabezado de la tabla (TH) */
+        .table-dark thead th {
+            color: var(--kawasaki-green);
+            border-bottom: 3px solid var(--kawasaki-green);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Cuerpo de la tabla (TD) */
+        .table-dark tbody td {
+            color: var(--text-light);
+        }
+
+
+        .btn-success {
+            background-color: var(--kawasaki-green);
+            border-color: var(--kawasaki-green);
+            color: var(--dark-bg);
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-success:hover {
+            background-color: #00b377;
+            border-color: #00b377;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-primary {
+            color: var(--text-light);
+            border-color: var(--text-secondary);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .btn-outline-primary:hover {
+            color: var(--kawasaki-green);
+            border-color: var(--kawasaki-green);
+        }
+    </style>
+</head>
+<body data-require-auth="true">
+
+<!-- Navbar común -->
+<th:block th:replace="layout :: navbar"></th:block>
+
+<div class="container mt-5">
+    <h2 class="text-white mb-4">🧾 Historial de Mis Compras</h2>
+
+    <div th:if="${#lists.isEmpty(historial)}" class="alert alert-info">
+        Aún no has realizado ninguna compra.
+    </div>
+
+    <div th:unless="${#lists.isEmpty(historial)}" class="table-responsive">
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+            <tr>
+                <th>ID de Orden</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Método de Pago</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="compra : ${historial}">
+                <td th:text="${compra.id}">9001</td>
+                <td th:text="${#dates.format(compra.fechaCompra, 'dd/MM/yyyy HH:mm')}">30/11/2025</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(compra.total, 1, 2, 'COMMA')}">$ 255,999.00</td>
+                <td th:text="${compra.metodoPago}">TARJETA</td>
+                <td>
+                    <a th:href="@{/compras/ticket/{id}(id=${compra.id})}" class="btn btn-sm btn-success">
+                        Descargar Ticket (PDF)
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/}" class="btn btn-outline-primary mt-3">← Volver al Catálogo</a>
+</div>
+
+
+</body>
+</html>

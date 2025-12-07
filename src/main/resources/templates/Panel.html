@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Usuario - Kawasaki</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+        /* Puedes mover esta sección al archivo estilos.css para limpieza */
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adaptable */
+            gap: 25px;
+            padding: 20px 50px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 255, 102, 0.15);
+            text-decoration: none;
+            color: #eaeaea;
+            transition: transform 0.3s;
+            min-height: 250px;
+            border: 1px solid #333;
+        }
+        .card h2 {
+            color: #00ff66;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 255, 102, 0.35);
+        }
+
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px 0; border-bottom: 1px dashed #333; font-size: 0.95rem;}
+        li:last-child { border-bottom: none; }
+
+        .welcome-bar {
+            background: #222;
+            color: #eaeaea;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00ff66;
+            font-size: 1.1rem;
+        }
+        .logout a {
+            color: #00ff66;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+        .logout a:hover {
+            color: #00cc55;
+        }
+    </style>
+</head>
+<body data-require-auth="true">
+
+<!-- Reemplazado por layout :: navbar -->
+<th:block th:replace="layout :: navbar"></th:block>
+
+<div class="welcome-bar">
+    <p>Panel de Control | Bienvenido,
+        <strong th:text="${nombreUsuario != null ? nombreUsuario : 'Administrador'}">
+            Administrador
+        </strong>
+        👋
+    </p>
+    <div class="logout">
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <a th:href="@{/productos}" class="card" id="gestion">
+        <h2>🔧 Gestión Productos</h2>
+        <p>Administración de inventario, precios y stock.</p>
+        <p style="color: #00ff66; font-weight: bold;">Acceder a CRUD →</p>
+    </a>
+
+    <div class="card" id="carrito">
+        <h2>🛒 Carrito</h2>
+        <ul>
+            <li>Mantenimiento Básico - <span style="color: #00ff66;">$1200</span></li>
+            <li>Aceite Kawasaki 4T - <span style="color: #00ff66;">$350</span></li>
+            <li>Cadena reforzada - <span style="color: #00ff66;">$800</span></li>
+            <li><a th:href="@{/carrito/ver}" style="display: block; margin-top: 15px; color: #00cc55; font-size: 0.9rem;">Ver carrito completo →</a></li>
+        </ul>
+    </div>
+
+    <div class="card" id="compras">
+        <h2>📦 Compras</h2>
+        <ul>
+            <li>Servicio de Frenos - <span style="color: #00ff66;">Completado ✅</span></li>
+            <li>Llantas Sport - <span style="color: #ff9900;">En proceso ⏳</span></li>
+            <li>Cambio de bujías - <span style="color: #00ff66;">Completado ✅</span></li>
+            <li><a th:href="@{/compras/historial}" style="display: block; margin-top: 15px; color: #00cc55; font-size: 0.9rem;">Ver historial completo →</a></li>
+        </ul>
+    </div>
+
+    <a th:href="@{/favoritos}" class="card" id="favoritos">
+        <h2>⭐ Mis Favoritos</h2>
+        <p>Revisa los artículos que has marcado como preferidos.</p>
+        <p style="color: #00ff66; font-weight: bold;">Ver artículos →</p>
+    </a>
+
+</div>
+
+
+</body>
+</html>

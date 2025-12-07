@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Productos Favoritos Kawasaki</title>
+
+    <th:block th:replace="layout :: headLinks"></th:block>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* [IMPORTANTE: Incluye o enlaza los estilos de body, header, .productos, .item, .product-actions, .buy-button, etc., que definiste en el index.html] */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0b0c10; color: #f1f1f1; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: linear-gradient(90deg, #000000, #0a5c2c); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        nav a { color: #f1f1f1; margin: 0 15px; font-weight: 500; transition: color 0.3s ease, transform 0.3s ease; }
+        nav a:hover { color: #00ff99; transform: scale(1.1); }
+
+        main { padding: 50px 10%; background: #101820; }
+        main h2 { text-align: center; font-size: 2.2rem; color: #00ff99; margin-bottom: 40px; }
+        .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+
+        .item { background: #1a1f24; border-radius: 15px; padding: 20px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .item:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(0,255,153,0.3); }
+        .item img { width: 100%; height: 200px; object-fit: contain; margin-bottom: 15px; border-radius: 10px; }
+        .item h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .item p { color: #00ff99; font-weight: 600; margin-bottom: 15px; font-size: 1.1rem; }
+
+        .product-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+        .product-actions .action-link { flex-grow: 1; }
+        .product-actions button { width: 100%; padding: 10px 5px; font-size: 0.9rem; font-weight: 600; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; border: none; }
+
+        .product-actions .buy-button { background: #00ff99; color: #000; }
+        .product-actions .buy-button:hover { background: #0a5c2c; color: #fff; transform: scale(1.05); }
+
+        /* Estilo para el botón de QUITAR (ajustado para la lista de favoritos) */
+        .remove-favorite-button {
+            background: #283038;
+            color: #ff4d4d; /* Rojo para la acción de quitar */
+            border: 2px solid #ff4d4d;
+        }
+
+        .remove-favorite-button:hover {
+            background: #ff4d4d;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        footer { text-align: center; padding: 25px; background: #0a5c2c; color: #fff; margin-top: 40px; font-weight: 500; letter-spacing: 1px; box-shadow: 0 -4px 10px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body data-require-auth="true">
+
+<!-- Navbar común -->
+<th:block th:replace="layout :: navbar"></th:block>
+
+<main>
+    <h2>⭐ Mis Productos Favoritos</h2>
+    <div class="productos">
+
+        <div class="item" th:each="producto : ${listaFavoritos}">
+
+            <img th:src="@{/img/{filename}(filename=${producto.imagenUrl})}"
+                 th:alt="${producto.nombre}">
+
+            <h3 th:text="${producto.nombre}">Nombre Dinámico</h3>
+
+            <p th:text="'$ ' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$ 0.00</p>
+
+            <div class="product-actions">
+                <a th:href="@{/carrito/agregar/{id}(id=${producto.id})}" class="action-link">
+                    <button class="buy-button">Comprar</button>
+                </a>
+
+                <a th:href="@{/favoritos/quitar/{id}(id=${producto.id})}" class="action-link">
+                    <button class="remove-favorite-button">❌ Quitar</button>
+                </a>
+            </div>
+
+        </div>
+
+        <div th:if="${#lists.isEmpty(listaFavoritos)}" style="grid-column: 1 / -1;">
+            <p style="color: #ff9900; text-align: center; font-size: 1.2rem;">Aún no tienes productos en tu lista de favoritos. ¡Explora y añade algunos!</p>
+        </div>
+
+    </div>
+</main>
+
+
+<script th:if="${alerta != null && msg != null}">
+    Swal.fire({
+        icon: '[[${alerta}]]',
+        title: '¡Operación Completa!',
+        text: '[[${msg}]]',
+        timer: 3000,
+        showConfirmButton: false
+    });
+</script>
+
+</body>
+</html>
